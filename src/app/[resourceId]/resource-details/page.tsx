@@ -131,7 +131,7 @@ const RentalPage: React.FC = () => {
   async function getData() {
     try {
       const res = await app.get(
-        `https://agent-with-me-backend.onrender.com/v1/house/detail/${resourceId}`
+        `https://agent-with-me-backend.onrender.com/v1/event/detail/${resourceId}`
       );
       console.log("helloe", res.data.data);
       const result = res.data;

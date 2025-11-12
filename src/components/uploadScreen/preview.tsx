@@ -52,10 +52,10 @@ const StepFour: React.FC<StepFourProps> = ({
             )}
           </div>
 
-          {/* Property Details */}
+          {/* event Details */}
           <div className="space-y-2">
             <h3 className="text-lg font-semibold text-gray-200">
-              Property Details:
+              event Details:
             </h3>
             <p>
               <span className="font-semibold">Title:</span> {formData.title}

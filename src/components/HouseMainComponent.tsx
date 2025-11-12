@@ -55,7 +55,8 @@ const HouseMainComponent: React.FC<HouseMainComponent> = ({
   const { base, app } = Req;
   useEffect(() => {
     //https://agent-with-me-backend.onrender.com
-    const finalUrl = `${base}/v1/event&category=${
+    //cams-api-oco8.onrender.com/v1//
+    const finalUrl = `${base}/v1/event?category=${
       keyword?.category || ""
     }&searchWord=${keyword?.searchWord || ""}&limit=${
       keyword?.limit || ""
