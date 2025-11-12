@@ -4,10 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import Link from "next/link";
-import { GiLightBulb } from "react-icons/gi";
-import { PiShowerBold } from "react-icons/pi";
 
-import { FcCancel } from "react-icons/fc";
 import { useRouter } from "next/navigation";
 import { BiCalendarEvent, BiEdit } from "react-icons/bi";
 import { GrGroup } from "react-icons/gr";

@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import StepOne from "./uploadScreen/upload1";
-import StepTwo from "./uploadScreen/upload2";
+
 import StepThree from "./uploadScreen/upload3";
 import StepFour from "./uploadScreen/preview";
 import Upload3One from "./uploadScreen/upload3.1";
-import Upload3Two from "./uploadScreen/upload3.2";
+
 import { ErroMessage, SuccessMessage, Validation } from "./message";
 import UploadingUi from "./UploadingUi";
 import FlotingShape from "./FlotingShape";

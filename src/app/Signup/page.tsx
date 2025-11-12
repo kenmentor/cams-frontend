@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Input from "@/components/Input";
 import { BiLoader, BiLock, BiUser } from "react-icons/bi";
 import { useState } from "react";
-import { MdDateRange, MdEmail } from "react-icons/md";
+import { MdEmail } from "react-icons/md";
 import Link from "next/link";
 import { useAuthStore } from "../store/authStore";
 import PasswordStrengthMeter from "@/components/passwordStrengthMeter";

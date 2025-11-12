@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import Footer from "@/components/footer";
 
 // Landing page component for Campus Activity Management System
 // Built with React + Tailwind CSS + Framer Motion

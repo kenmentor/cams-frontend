@@ -423,4 +423,12 @@ export const propertyCategory: string[] = [
   "Social",
   "Workshop",
 ];
+
+export const propertyType: string[] = [
+  "Sport",
+  "Club",
+  "Academic",
+  "Social",
+  "Workshop",
+];
 // constants.ts

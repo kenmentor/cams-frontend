@@ -7,7 +7,6 @@ import {
   FaLinkedinIn,
   FaTiktok,
 } from "react-icons/fa";
-import Feedback from "./feedback";
 
 const Footer = () => {
   return (

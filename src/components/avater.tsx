@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BiHome, BiUser } from "react-icons/bi";
 
 import { MdRequestPage } from "react-icons/md";
-import { GrTransaction } from "react-icons/gr";
+
 import { FaUser } from "react-icons/fa";
 
 const colors = [

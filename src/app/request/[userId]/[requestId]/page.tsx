@@ -78,7 +78,7 @@ const RequestDetailsPage = () => {
   }
 
   useEffect(() => {
-    // getData();
+    getData();
   }, [user]);
 
   if (loading || !user) return <Loading />;

@@ -8,7 +8,6 @@ import Footer from "@/components/footer";
 import HouseMainComponent from "@/components/HouseMainComponent";
 import { useSearchParams, useRouter } from "next/navigation";
 import Loading from "@/components/Loainding";
-import Resource from "@/components/Resource";
 
 // Define resource type
 interface keyword {

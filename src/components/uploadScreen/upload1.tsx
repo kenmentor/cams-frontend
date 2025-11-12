@@ -2,10 +2,10 @@ import Image from "next/image";
 import Input from "@/components/Input";
 import React, { useState } from "react";
 import { BiLocationPlus, BiText } from "react-icons/bi";
-import { FaAddressBook } from "react-icons/fa";
+
 import { motion } from "framer-motion";
 import Meter from "../meter";
-import { statesAndLGAs } from "@/app/data";
+
 import { GrGroup } from "react-icons/gr";
 
 interface formData {

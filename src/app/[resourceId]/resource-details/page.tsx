@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaStar, FaWhatsapp, FaTimes, FaLocationArrow } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import { FaWhatsapp, FaLocationArrow } from "react-icons/fa";
+
 import { useParams } from "next/navigation";
 import Footer from "@/components/footer";
 import HouseMainComponent from "@/components/HouseMainComponent";
 import HeaderCustom from "@/components/HeaderCostum";
-import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
+
 import Loading from "@/components/Loainding";
 import Req from "@/app/utility/axois";
 
-import { BiX } from "react-icons/bi";
 import { useAuthStore } from "@/app/store/authStore";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -38,7 +37,7 @@ const RentalPage: React.FC = () => {
   const { resourceId } = useParams();
   const [selectedImage, setSelectedImage] = useState<string>("hello");
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+
   const [readMore, setReadMore] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -59,6 +58,7 @@ const RentalPage: React.FC = () => {
       phoneNumber: 456,
     },
   });
+  console.log("model", modalOpen);
   const router = useRouter();
   const user = useAuthStore((state) => state.user);
 

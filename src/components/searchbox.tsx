@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import { motion } from "framer-motion";
-import Price from "./price";
+
 import { useAuthStore } from "@/app/store/authStore";
 
 import { useRouter } from "next/navigation";
@@ -21,7 +21,7 @@ type SearchboxProps = {
 
 const Searchbox = ({ setKeyword }: SearchboxProps) => {
   const [activeCategories, setActiveCategories] = useState<string>();
-  const [price, setPrice] = useState(false);
+
   const user = useAuthStore((state) => state.user);
   const router = useRouter();
   console.log(activeCategories);
@@ -29,9 +29,6 @@ const Searchbox = ({ setKeyword }: SearchboxProps) => {
     setActiveCategories(category);
   };
 
-  function onclickPrice() {
-    setPrice((prev) => !prev);
-  }
   function handleClick() {
     router.push("/upload");
   }
@@ -61,7 +58,10 @@ const Searchbox = ({ setKeyword }: SearchboxProps) => {
               activeCategories == element && "bg-blue-500 text-white"
             }`}
             key={index}
-            onClick={() => toggleCategory(element)}
+            onClick={() => {
+              toggleCategory(element);
+              setKeyword((prev) => ({ ...prev, category: element }));
+            }}
             whileTap={{ scale: 0.95 }}
             value={element}
           >
@@ -71,7 +71,6 @@ const Searchbox = ({ setKeyword }: SearchboxProps) => {
       </nav>
 
       {/* Price Input */}
-      {price && <Price setKeyword={setKeyword} />}
 
       {/* Advanced Filter Button */}
     </div>
