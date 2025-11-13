@@ -24,7 +24,7 @@ function Page() {
     email: "",
     password: "",
     dateOfBirth: "",
-    registration: "",
+    regNumber: "",
   });
   const [sentCode, setsentCode] = useState(false);
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -117,7 +117,7 @@ function Page() {
                   icon={GrContact}
                   type="number"
                   placeholder="Registration Number"
-                  value={formData.registration}
+                  value={formData.regNumber}
                   name="registration"
                   onChange={handleChange}
                 />

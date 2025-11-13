@@ -88,7 +88,7 @@ const Page = () => {
   }, [code]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-blue-900 justify-center relative overflow-hidden flex items-center">
+    <div className="relative min-h-screen bg-gradient-to-br from-white-200 via-blue-200 to-blue-200 flex items-center justify-center overflow-hidden">
       {isRedirecting && <ScreenBlocker />} {/* ✅ BLOCKER HERE */}
       <FlotingShape
         color="bg-blue-400"
@@ -116,7 +116,7 @@ const Page = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="p-8"
+          className="max-w-md w-full bg-gray-800  backdrop-blur-lg rounded-2xl shadow-xl z-10"
         >
           <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-blue-400 to-blue-500 text-transparent bg-clip-text">
             Verify Your Email

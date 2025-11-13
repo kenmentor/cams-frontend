@@ -8,7 +8,7 @@ import Loading from "@/components/Loainding";
 import SearchBar from "@/components/SearchBar";
 import UserComponent from "@/components/UserComponent";
 import { BiUserX } from "react-icons/bi";
-
+import Req from "@/app/utility/axois";
 interface Data {
   _id: string;
   email?: string;
@@ -38,19 +38,13 @@ const Page = () => {
   const [keyword, setKeyword] = useState<Keyword>();
   const user = useAuthStore((state) => state.user);
 
-  const URL_ENDPOINT = "https://agent-with-me-backend.onrender.com/v1";
-
-  const app = axios.create({
-    baseURL: "https://agent-with-me-backend.onrender.com",
-    withCredentials: true,
-    headers: { "Content-Type": "application/json" },
-  });
+  const { base, app } = Req;
 
   async function getData() {
     setLoading(true);
     try {
       const response = await app.get(
-        `${URL_ENDPOINT}/user?email=${keyword?.searchWord || ""}`
+        `${base}/user?email=${keyword?.searchWord || ""}`
       );
       setData(response.data.data || []);
     } catch (error) {
