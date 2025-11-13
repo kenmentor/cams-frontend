@@ -118,7 +118,7 @@ function Page() {
                   type="number"
                   placeholder="Registration Number"
                   value={formData.regNumber}
-                  name="registration"
+                  name="regNumber"
                   onChange={handleChange}
                 />
                 <Input
