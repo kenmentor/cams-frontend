@@ -29,7 +29,10 @@ function Page() {
   const [sentCode, setsentCode] = useState(false);
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
+    console.log("this is the name and value", name, value);
+    console.log("this is the form data before set", formData);
     setFormData((prev) => ({ ...prev, [name]: value }));
+    console.log("this is the form data after set", formData);
   }
 
   async function handleSubmit(e: React.FormEvent) {
