@@ -41,7 +41,7 @@ export const useAuthStore = create(
           } else {
             set({ user: data.data, isLoading: false, error: null });
           }
-
+          router.push(`/verify-email/${response.data.verifyToken}`);
           return data;
         } catch (error) {
           const errMsg =
@@ -69,7 +69,7 @@ export const useAuthStore = create(
 
           set({ user: data.data, isAuthenticated: true, isLoading: false });
           const router = useRouter();
-          router.push(`/verify-email/${response.data.verifyToken}`);
+
           return response;
         } catch (error) {
           console.error(

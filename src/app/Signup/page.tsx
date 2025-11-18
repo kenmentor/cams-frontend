@@ -25,7 +25,7 @@ function SignupPage() {
   });
 
   const [sentCode, setsentCode] = useState(false);
-
+  const [code, setCode] = useState("99");
   // Track form data updates
   useEffect(() => {
     console.log("Form Data Updated:", formData);
@@ -40,6 +40,7 @@ function SignupPage() {
     e.preventDefault();
     try {
       const data = await signup(formData);
+      setCode(data.verifyToken);
       console.log("Signup response:", data);
       if (data?.status === 200) {
         setsentCode(true); // Show verification message
