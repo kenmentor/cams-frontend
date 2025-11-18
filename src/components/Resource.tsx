@@ -1,15 +1,17 @@
 "use client";
-
+// @ts-nocheck
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FaMapMarkerAlt } from "react-icons/fa";
+
 import Link from "next/link";
-
 import { useRouter } from "next/navigation";
-import { BiCalendarEvent, BiEdit } from "react-icons/bi";
-import { GrGroup } from "react-icons/gr";
+import { BiEdit, BiUser } from "react-icons/bi";
+import { GrLike } from "react-icons/gr";
 
-// Define the resource type
+import { GoLocation } from "react-icons/go";
+
+import { CgAtlasian } from "react-icons/cg";
+
 type ResourceProps = {
   header: string;
   thumbnail: string;
@@ -18,11 +20,10 @@ type ResourceProps = {
   location: string;
   category?: string;
   isNew?: boolean;
-  gallery: { src: string; alt: string }[];
-
+  gallery?: { src: string; alt: string }[];
   hostId: string;
   userId?: string;
-  eventdate?: string;
+  eventdate?: string | Date;
 };
 
 const Resource = ({
@@ -33,110 +34,116 @@ const Resource = ({
   hostId,
   location,
   category = "academics",
-  eventdate = "s",
+  eventdate = new Date().toDateString(),
   userId,
 }: ResourceProps) => {
-  let categoryStyle = "text-blue-500 bg-blue-100 ";
-
-  if (category === "sport") {
-    categoryStyle = "text-blue-500";
-  }
-  if (category === "club") {
-    categoryStyle = "text-orange-500";
-  }
-
-  if (category === "academic") {
-    categoryStyle = "text-green-500";
-  }
-
-  if (category === "social") {
-    categoryStyle = "text-green-500";
-  }
-
-  if (category === "workshop") {
-    categoryStyle = "text-green-500";
-  }
   const router = useRouter();
   const isOwner = hostId === userId;
-  function handleEdit() {
+
+  const handleEdit = () => {
+    console.log(maxguest);
     router.push(`/edit-post/${id}`);
-  }
+  };
+
+  // Category styling
+  const categoryColorMap: Record<string, string> = {
+    sport: "bg-blue-700/30 text-blue-500",
+    sports: "bg-blue-700/30 text-blue-500",
+    club: "bg-orange-700/30 text-orange-500",
+    clubs: "bg-orange-700/30 text-orange-500",
+    academic: "bg-green-700/30 text-green-500",
+    academics: "bg-green-700/30 text-green-500 ",
+
+    social: "bg-green-700/30 text-green-500",
+    socials: "bg-green-700/30 text-green-500",
+    workshop: "bg-green-700/30 text-green-500",
+    workshops: "bg-green-700/30 text-green-500",
+  };
+  // Convert eventdate prop into readable format
+  const dateObj = new Date(eventdate);
+  const month = dateObj.toLocaleString("default", { month: "short" }); // e.g., "Nov"
+  const day = dateObj.getDate(); // e.g., 11
+
+  const categoryStyle =
+    categoryColorMap[category] || "bg-gray-100 text-puple-700";
 
   return (
-    <motion.div
-      className="relative  bg-gray-50 rounded-sm overflow-hidden border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer"
-      whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.3 }}
+    <Link
+      href={`/${id}/resource-details`}
+      className="text-gray-300 hover:text-gray-300"
     >
-      {/* New Badge (Replace later) */}
-      <span
-        onClick={handleEdit}
-        className="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-md"
+      <motion.div
+        className="relative  bg-[#1C1C1E]rounded-2xl overflow-hidden  dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer shadow-lg "
+        whileTap={{ scale: 0.97 }}
+        transition={{ duration: 0.3 }}
       >
-        <BiEdit />
-      </span>
-
-      {/* Thumbnail Section */}
-      <div className="relative h-52 w-full overflow-hidden">
+        {/* Edit Badge */}
         {isOwner && (
           <span
             onClick={handleEdit}
-            className="absolute top-3 left-3 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded-md z-10"
+            className="absolute top-3 left-3 z-10 bg-green-600 text-white p-2 rounded-full shadow-md hover:bg-green-500 transition"
+            title="Edit Resource"
           >
             <BiEdit />
           </span>
         )}
 
-        <Image
-          src={thumbnail}
-          alt={"hhh"}
-          layout="fill"
-          objectFit="cover"
-          unoptimized={true}
-          className="transition-transform duration-300 hover:scale-105"
-        />
-      </div>
-
-      {/* Details Section */}
-      <div className="p-4 space-y-3">
-        {/* Title, Price & Category */}
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-900 truncate">
-            {header}
-          </h2>
-
-          <span className="text-lg font-bold text-blue-500 flex items-center gap-2">
-            <BiCalendarEvent />
-            {eventdate.toLocaleString()}
-          </span>
-          <span className="text-lg font-bold text-blue-500 flex items-center gap-2">
-            <GrGroup />
-            {maxguest.toLocaleString()}
-          </span>
+        {/* Thumbnail / Hero Image */}
+        <div className="relative h-56 sm:h-64 md:h-72 w-full overflow-hidden rounded-t-2xl">
+          <Image
+            src={thumbnail}
+            alt={header}
+            layout="fill"
+            objectFit="cover"
+            unoptimized
+            className="transition-transform duration-300 hover:scale-105"
+          />
         </div>
+        <div className="px-[20px] pb-1">
+          <div className="flex items-center gap-4 mb-3">
+            <div className="flex flex-col items-center justify-center text-center bg-[#0A84FF] text-white rounded-xl w-16 h-16 p-2 shadow-md">
+              <span className="text-sm font-medium">{month}</span>
+              <span className="text-2xl font-bold">{day}</span>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold">{header}</h2>
+              <p className="text-gray-300 text-sm">
+                {new Date(eventdate).toLocaleDateString(undefined, {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
+          </div>
 
-        {/* Landmark & Category */}
-        <p className="text-sm text-gray-500 flex items-center gap-1">
-          <FaMapMarkerAlt className="text-red-500" /> {location}
-        </p>
-        <div className="flex flex-wrap gap-2 sm:gap-3 items-center">
-          {/* Category */}
-          <p
-            className={`${categoryStyle} text-[10px] sm:text-xs font-medium  px-2 py-1 rounded-lg`}
-          >
-            {category}
-          </p>
+          <div className="gap-1 flex pb-5">
+            <span
+              className={` px-2  m-0 flex items-center gap-1  ${categoryStyle} rounded-lg`}
+            >
+              <CgAtlasian />
+
+              {category}
+            </span>
+            <span
+              className={` m-0 flex items-center px-2 gap-1  bg-orange-700/30 text-orange-500   rounded-lg`}
+            >
+              <BiUser />
+              {"all university can join "}
+            </span>
+          </div>
+
+          <div className="flex p-3 bg-[#252527] rounded-lg items-center ">
+            <div className="flex items-center w-full text-[16px] gap-2">
+              <GoLocation /> <p>{location}</p>
+            </div>
+            <GrLike />
+          </div>
         </div>
-
-        {/* View Details Button */}
-        <Link
-          href={`/${id}/resource-details`}
-          className="block text-center text-white  bg-blue-600 hover:bg-blue-700 transition-all duration-300 py-2 rounded-sm font-medium hover:text-blue-500"
-        >
-          View Details
-        </Link>
-      </div>
-    </motion.div>
+        {/* Content */}
+      </motion.div>
+    </Link>
   );
 };
 

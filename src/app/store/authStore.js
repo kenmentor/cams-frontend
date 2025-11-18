@@ -1,8 +1,11 @@
+// @ts-nocheck
+
 import { create } from "zustand";
 
 import { persist } from "zustand/middleware";
 import Req from "@/app/utility/axois";
 import { toast } from "sonner";
+import { useRouter } from "next/router";
 
 const { app, base } = Req;
 // Axios instance
@@ -26,6 +29,7 @@ export const useAuthStore = create(
         try {
           const response = await app.post(`${base}/v1/auth/signup`, object);
           const data = response.data;
+
           if (!data?.ok) {
             toast.success("email have been sent");
           }
@@ -38,7 +42,7 @@ export const useAuthStore = create(
             set({ user: data.data, isLoading: false, error: null });
           }
 
-          return response;
+          return data;
         } catch (error) {
           const errMsg =
             error?.response?.message ||
@@ -64,6 +68,8 @@ export const useAuthStore = create(
           console.log(data);
 
           set({ user: data.data, isAuthenticated: true, isLoading: false });
+          const router = useRouter();
+          router.push(`/verify-email/${response.data.verifyToken}`);
           return response;
         } catch (error) {
           console.error(

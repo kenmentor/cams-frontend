@@ -28,58 +28,79 @@ const UserComponent: React.FC<Data> = ({
   return (
     <a
       href={`/profile/${_id}`}
-      className="block relative bg-white/70 dark:bg-gray-900/70 backdrop-blur-md rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] p-6 w-full md:w-96 mx-auto mb-6 border border-gray-200/40 dark:border-gray-700/40"
+      className="
+        block w-full md:w-96 mx-auto mb-6 rounded-2xl border border-[#E5E5EA]
+        bg-[#FFFFFF]/80 dark:bg-[#1C1C1E]/70 backdrop-blur-xl
+        shadow-sm hover:shadow-lg hover:scale-[1.01]
+        transition-all duration-300
+        p-6
+      "
     >
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-5">
         {/* Profile Image */}
         {profileImage ? (
           <img
             src={profileImage}
             alt="Profile"
-            className="w-20 h-20 rounded-full object-cover border-4 border-blue-500 shadow-md"
+            className="
+              w-20 h-20 rounded-full object-cover 
+              border-4 border-[#0A84FF] shadow-md
+            "
           />
         ) : (
-          <div className="w-20 h-20 rounded-full border-4 border-blue-500 flex items-center justify-center bg-gradient-to-r bg-blue-500 text-white shadow-md">
+          <div
+            className="
+              w-20 h-20 rounded-full 
+              flex items-center justify-center
+              bg-[#0A84FF] text-white 
+              border-4 border-[#0A84FF] shadow-md
+            "
+          >
             <BiUser className="w-10 h-10" />
           </div>
         )}
 
         {/* User Info */}
         <div className="flex-1">
-          <h2 className="text-lg font-semibold flex items-center gap-2 truncate">
+          <h2 className="text-xl font-semibold flex items-center gap-2 truncate text-[#111111] dark:text-[#F2F2F7]">
             {userName || "Unknown User"}
             {adminVerified && (
-              <MdVerifiedUser className="text-blue-500 text-xl" />
+              <MdVerifiedUser className="text-[#0A84FF] text-xl" />
             )}
           </h2>
+
           <p className="text-sm text-gray-600 dark:text-gray-300 truncate">
             {email || "No email provided"}
           </p>
-          <div className="mt-2 space-y-1">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              <span className="font-medium text-gray-700 dark:text-gray-200">
-                Role:
+
+          <div className="mt-3 space-y-1">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              <span className="font-medium text-[#111111] dark:text-[#F2F2F7]">
+                Campus Role:
               </span>{" "}
               {role || "N/A"}
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              <span className="font-medium text-gray-700 dark:text-gray-200">
-                Rank:
+
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              <span className="font-medium text-[#111111] dark:text-[#F2F2F7]">
+                Student Rank:
               </span>{" "}
               {rank || 0}
             </p>
+
             {dateJoined && (
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-medium text-gray-700 dark:text-gray-200">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                <span className="font-medium text-[#111111] dark:text-[#F2F2F7]">
                   Joined:
                 </span>{" "}
                 {new Date(dateJoined).toLocaleDateString()}
               </p>
             )}
+
             {numBookings !== undefined && (
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                <span className="font-medium text-gray-700 dark:text-gray-200">
-                  Properties/Bookings:
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                <span className="font-medium text-[#111111] dark:text-[#F2F2F7]">
+                  Registered Activities:
                 </span>{" "}
                 {numBookings}
               </p>

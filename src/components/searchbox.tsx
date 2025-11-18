@@ -35,7 +35,7 @@ const Searchbox = ({ setKeyword }: SearchboxProps) => {
 
   return (
     <div className="px-4 py-4 flex flex-col gap-3">
-      <nav className="flex  gap-3">
+      <nav className="flex  gap-3 overflow-x-scroll md:overflow-auto">
         {/* Upload Button */}
         {user?.role == "host" && (
           <motion.button

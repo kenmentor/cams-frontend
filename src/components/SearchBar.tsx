@@ -1,13 +1,14 @@
+"use client";
+
 import React from "react";
 import { MdLocationSearching, MdSearch } from "react-icons/md";
-import { useAuthStore } from "@/app/store/authStore";
-import UserAvatar from "./avater";
 import { LuUserSearch } from "react-icons/lu";
-import Link from "next/link";
 import { BiUser } from "react-icons/bi";
+import Link from "next/link";
+import { useAuthStore } from "@/app/store/authStore";
+import UserAvatar from "@/components/avater";
 
-// Define types for props
-interface keyword {
+interface Keyword {
   searchWord: string;
   limit: number;
   category?: string;
@@ -15,13 +16,13 @@ interface keyword {
 }
 
 type SearchBarProps = {
-  setKeyword: React.Dispatch<React.SetStateAction<keyword>>;
-  searchType?: string;
+  setKeyword: React.Dispatch<React.SetStateAction<Keyword>>;
+  searchType?: "location" | "word" | "user";
 };
 
-const SearchBar = ({ setKeyword, searchType }: SearchBarProps) => {
+const SearchBar = ({ setKeyword, searchType = "word" }: SearchBarProps) => {
   const user = useAuthStore((state) => state.user);
-  // Handle input change
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword((prev) => ({
       ...prev,
@@ -29,41 +30,42 @@ const SearchBar = ({ setKeyword, searchType }: SearchBarProps) => {
     }));
   };
 
+  const iconMap = {
+    location: (
+      <MdLocationSearching className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+    ),
+    word: (
+      <MdSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+    ),
+    user: (
+      <LuUserSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+    ),
+  };
+
   return (
-    <header
-      className={`fixed left-0 right-0 bg-white top-0 px-6 py-3 flex items-center ${
-        user ? "gap-4" : "gap-4"
-      } shadow-md z-50`}
-    >
-      {/* Search Input Wrapper */}
+    <header className="fixed left-0 right-0 top-0 z-50 px-6 py-3 bg-white dark:bg-[#111111] shadow-lg flex items-center gap-4 backdrop-blur-sm">
+      {/* Search Input */}
       <div className="relative flex-1">
         <input
           type="text"
-          placeholder="Search with location..."
-          className="w-full h-12 pl-12 pr-4 rounded bg-gray-100 text-gray-700 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Search by location..."
+          className="w-full h-12 pl-12 pr-4 rounded-2xl bg-gray-100 dark:bg-[#1C1C1E] text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-300 shadow-sm hover:shadow-md"
           onChange={handleChange}
         />
-        {/* Search Icon Inside Input */}
-        {searchType == "location" && (
-          <MdLocationSearching className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
-        )}
-
-        {searchType == "word" && (
-          <MdSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
-        )}
-        {searchType == "user" && (
-          <LuUserSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
-        )}
-        {}
+        {iconMap[searchType]}
       </div>
+
+      {/* Sign Up Button */}
       {!user && (
-        <Link href={"/Signup"}>
-          <button className=" flex items-center justify-center gap-1 rounded-sm  py-1  text-sm border-blue-600 border text-blue-600 bg-transparent hover:text-white">
-            <BiUser /> Sign Up
+        <Link href="/Signup">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-blue-600 text-blue-600 bg-transparent hover:bg-blue-600 hover:text-white transition-all duration-300 font-medium text-sm">
+            <BiUser size={18} /> Sign Up
           </button>
         </Link>
       )}
-      <UserAvatar />
+
+      {/* User Avatar */}
+      {user && <UserAvatar />}
     </header>
   );
 };

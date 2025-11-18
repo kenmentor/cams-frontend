@@ -2,63 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Light Mode (Default) */
+
 body {
-  @apply font-sans bg-white text-gray-900 ; /* Light background & dark text */
+  @apply font-sans bg-white text-gray-900 leading-relaxed text-base;
 }
 
 a {
+  @apply transition-colors duration-300 ease-in-out;
+  color: #0A84FF;
   padding: 0;
   margin: 0;
-  color: #0059ff; /* A professional blue shade */
-  transition: color 0.3s ease-in-out;
 }
 
 a:hover {
-  color: #0156a5; /* Darker shade on hover */
-}
-
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-  body {
-    @apply bg-white text-white;
-  }
-}
-
-/* Header Animation */
-.header-slide-in {
-  transition: transform 0.3s ease-in-out;
-}
-
-.header-hidden {
-  transform: translateY(-100%);
-}
-
-.header-visible {
-  transform: translateY(0);
-}
-
-/* Form Inputs Styling */
-input, textarea {
-  @apply p-3 border border-gray-300 rounded w-full;
-  transition: border-color 0.3s ease-in-out;
-}
-
-input:focus, textarea:focus {
-  @apply border-blue-500 outline-none;
+  color: #0059CC;
 }
 
 /* Buttons */
 button {
-  @apply bg-blue-600 text-white p-3 rounded;
-  transition: background-color 0.3s ease-in-out;
+  @apply bg-[#0A84FF] text-white font-semibold py-3 px-6 rounded-2xl shadow-md transition-transform transform hover:scale-105;
 }
 
 button:hover {
-  @apply bg-blue-700;
+  @apply bg-[#0066FF];
 }
 
-/* Utility Classes */
-.container {
-  @apply mx-auto px-4 max-w-7xl;
+input, textarea {
+  @apply p-3 border border-gray-300 rounded w-full transition-colors duration-300 ease-in-out;
 }
+
+input:focus, textarea:focus {
+  @apply border-[#0A84FF] outline-none shadow-sm;
+}
+
+
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-[#111111] text-gray-100;
+  }
+
+  a {
+    color: #0A84FF;
+  }
+
+  a:hover {
+    color: #0A7BFF;
+  }
+
+  button {
+    @apply bg-[#0A84FF] text-white;
+  }
+
+  button:hover {
+    @apply bg-[#0066FF];
+  }
+
+  input, textarea {
+    @apply bg-[#1C1C1E] text-white border-gray-600;
+  }
+}
+

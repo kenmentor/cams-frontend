@@ -1,14 +1,14 @@
 "use client";
 
-import Resource from "@/components/Resource";
 import React, { useEffect, useState } from "react";
-import Loading from "@/components/Loainding";
-import Error from "@/components/Erro";
 import { motion } from "framer-motion";
-import { useAuthStore } from "@/app/store/authStore";
 import { useRouter } from "next/navigation";
+
+import Resource from "@/components/Resource";
+
+import Error from "@/components/Erro";
+import { useAuthStore } from "@/app/store/authStore";
 import Req from "@/app/utility/axois";
-// import { useSearchParams } from "next/navigation";
 
 interface ResourceType {
   header: string;
@@ -19,7 +19,7 @@ interface ResourceType {
   location: string;
   gallery: { src: string; alt: string }[];
   maxguest: number;
-  eventdate: string;
+  createdAt: string;
   _id: string;
   host: string;
 }
@@ -27,19 +27,18 @@ interface ResourceType {
 interface keyword {
   searchWord: string;
   limit: number;
-
   category?: string;
   id?: string;
 }
 
-interface HouseMainComponent {
+interface HouseMainComponentProps {
   keyword?: keyword;
   bardge?: number;
   page: boolean;
   userId?: string;
 }
 
-const HouseMainComponent: React.FC<HouseMainComponent> = ({
+const HouseMainComponent: React.FC<HouseMainComponentProps> = ({
   keyword,
   bardge = 1,
   page = true,
@@ -48,14 +47,13 @@ const HouseMainComponent: React.FC<HouseMainComponent> = ({
   const [data, setData] = useState<ResourceType[]>([]);
   const [error, setError] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  console.log(keyword);
+
   const user = useAuthStore((state) => state.user);
-  console.log(user);
   const router = useRouter();
   const { base, app } = Req;
+
   useEffect(() => {
-    //https://agent-with-me-backend.onrender.com
-    //cams-api-oco8.onrender.com/v1//
+    console.log(bardge);
     const finalUrl = `${base}/v1/event?category=${
       keyword?.category || ""
     }&searchWord=${keyword?.searchWord || ""}&limit=${
@@ -67,11 +65,7 @@ const HouseMainComponent: React.FC<HouseMainComponent> = ({
         setLoading(true);
         setError(false);
         const res = (await app.get(finalUrl)).data;
-        const result = await res.data;
-        console.log(result);
-        console.log(keyword?.searchWord);
-        console.log(bardge);
-        setData(result);
+        setData(res.data || []);
       } catch (err) {
         console.error(err);
         setError(true);
@@ -79,50 +73,44 @@ const HouseMainComponent: React.FC<HouseMainComponent> = ({
         setLoading(false);
       }
     };
-    console.log("gfgg");
 
     fetchData();
   }, [page ? keyword : ""]);
-  function handleRequest() {
-    router.push("/book-on-request");
-  }
+
   return (
-    <main className="px-6 py-10 ">
+    <main className=" dark:bg-[#111111] min-h-screen">
       {loading ? (
-        <Loading />
+        <div>loading...</div>
       ) : error ? (
         <Error />
-      ) : (
+      ) : data.length > 0 ? (
         <motion.div
-          className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 "
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {data.length > 0 ? (
-            data.map((resource) => (
-              <Resource
-                key={resource._id}
-                thumbnail={resource.thumbnail || "/de/d"}
-                id={resource._id}
-                header={resource.header}
-                gallery={resource.gallery}
-                location={resource.location}
-                hostId={resource?.host}
-                userId={user?._id}
-                maxguest={resource.maxguest}
-                eventdate={resource.eventdate}
-              />
-            ))
-          ) : (
-            <div>
-              <p className="text-gray-500 text-center col-span-full">
-                Tell our Agent What You Want
-              </p>
-              <button onClick={handleRequest}>Request</button>
-            </div>
-          )}
+          {data.map((resource) => (
+            <Resource
+              key={resource._id}
+              thumbnail={resource.thumbnail || "/placeholder.png"}
+              id={resource._id}
+              header={resource.header}
+              gallery={resource.gallery}
+              location={resource.location}
+              hostId={resource.host}
+              userId={user?._id}
+              maxguest={resource.maxguest}
+              eventdate={resource.createdAt}
+            />
+          ))}
         </motion.div>
+      ) : (
+        <div className="flex flex-col items-center justify-center mt-20 gap-4 text-center">
+          <p className="text-gray-500 dark:text-gray-400 text-lg">
+            No resources found matching your criteria.
+          </p>
+        </div>
       )}
     </main>
   );

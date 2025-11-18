@@ -41,7 +41,7 @@ const UploadWizard = () => {
     type: "",
 
     host: "",
-    maxguest: 100000,
+    maxguest: 10000,
   });
   const [message, setMessage] = useState("");
   const { base } = Req;

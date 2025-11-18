@@ -9,7 +9,7 @@ import UserAvatar from "./avater";
 import { BiUser } from "react-icons/bi";
 
 type HeaderProps = {
-  text: string;
+  text?: string;
   showBackButton?: boolean; // Optional back button toggle
 };
 
@@ -29,7 +29,7 @@ const HeaderCustom = ({ text, showBackButton = true }: HeaderProps) => {
   console.log("hello");
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white text-gray-600 shadow-md"
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3  text-gray-100 shadow-md bg-[#1C1C1E]"
       initial={{ y: -80 }}
       animate={{ y: isVisible ? 0 : -80 }}
       transition={{ duration: 0.3 }}
@@ -37,7 +37,7 @@ const HeaderCustom = ({ text, showBackButton = true }: HeaderProps) => {
       {/* Back Button (Only Show When Needed) */}
       {showBackButton && (
         <Link href={"/homepage"}>
-          <MdArrowBackIos className="text-gray-600 h-8 w-8" />
+          <MdArrowBackIos className="text-blue-500 h-8 w-8" />
         </Link>
       )}
       {/* Title */}
