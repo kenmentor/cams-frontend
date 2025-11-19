@@ -5,7 +5,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import Req from "@/app/utility/axois";
 import { toast } from "sonner";
-import { useRouter } from "next/router";
 
 const { app, base } = Req;
 // Axios instance
@@ -14,6 +13,7 @@ const { app, base } = Req;
 //const base = "http://localhost:5036/v1";
 
 // Zustand Auth Store
+
 export const useAuthStore = create(
   persist(
     (set) => ({
@@ -41,7 +41,7 @@ export const useAuthStore = create(
           } else {
             set({ user: data.data, isLoading: false, error: null });
           }
-          router.push(`/verify-email/${response.data.verifyToken}`);
+
           return data;
         } catch (error) {
           const errMsg =
@@ -68,7 +68,6 @@ export const useAuthStore = create(
           console.log(data);
 
           set({ user: data.data, isAuthenticated: true, isLoading: false });
-          const router = useRouter();
 
           return response;
         } catch (error) {

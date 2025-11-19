@@ -10,12 +10,13 @@ import { GrContact } from "react-icons/gr";
 import Link from "next/link";
 import { useAuthStore } from "../store/authStore";
 import PasswordStrengthMeter from "@/components/passwordStrengthMeter";
+import { useRouter } from "next/navigation";
 
 function SignupPage() {
   const signup = useAuthStore((state) => state.signup);
   const isLoading = useAuthStore((state) => state.isLoading);
   const error = useAuthStore((state) => state.error);
-
+  const router = useRouter();
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
@@ -44,6 +45,7 @@ function SignupPage() {
       console.log("Signup response:", data);
       if (data?.status === 200) {
         setsentCode(true); // Show verification message
+        router.push(`/verify-email/${data.verifyToken}`);
       }
     } catch (err) {
       console.error("Signup error:", err);
