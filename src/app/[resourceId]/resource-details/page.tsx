@@ -80,12 +80,13 @@ const RentalPage: React.FC = () => {
           houseId: data._id,
         });
       }
-      router.push(`/request/${user._id}`);
+      router.push(`/request/${user.role}/${user._id}`);
     } catch (erro) {
       const res = erro.response?.data;
       toast.error(res?.message || "Something went wrong");
     } finally {
       setLoading(false);
+      router.push(`/request/${user.role}/${user._id}`);
     }
   }
 

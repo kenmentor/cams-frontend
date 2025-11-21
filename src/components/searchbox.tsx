@@ -35,13 +35,12 @@ const Searchbox = ({ setKeyword }: SearchboxProps) => {
 
   return (
     <div className="px-4 py-4 flex flex-col gap-3">
-      <nav className="flex  gap-3 overflow-x-scroll md:overflow-auto">
+      <nav className="flex  gap-3 overflow-x-scroll md:scroll ">
         {/* Upload Button */}
         {user?.role == "host" && (
           <motion.button
-            whileTap={{ scale: 0.95 }}
             onClick={handleClick}
-            className="flex items-center justify-center gap-1 rounded-md px-4 py-2 text-sm font-medium bg-blue-600 text-white border border-blue-700 hover:bg-blue-700 transition-all"
+            className="   flex md:w-[1300px]  items-center justify-center gap-1 rounded-md px-4 md:px-1 py-2 text-sm font-medium bg-blue-600 text-white border border-blue-700 hover:bg-blue-700 transition-all"
           >
             <IoAdd className="size-5 font-bold" />
             <span className="hidden sm:inline">Create an event</span>

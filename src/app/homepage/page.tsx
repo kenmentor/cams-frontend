@@ -53,7 +53,7 @@ const PageContent: React.FC = () => {
       <div className="min-h-screen bg-[#1C1C1E] text-white pt-16 antialiased font-sans">
         {/* Header Section */}
         <motion.header
-          className="px-6 py-10 bg-[#2C2C2E]/80 backdrop-blur-md shadow-sm border-b border-[#3A3A3C] mx-auto w-full"
+          className="px-6 py-10 bg-[#2C2C2E]/80 backdrop-blur-md shadow-sm border-b border-[#3A3A3C] mx-auto w-full z-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -73,7 +73,7 @@ const PageContent: React.FC = () => {
 
         {/* Search Section */}
 
-        <div className="max-w-4xl mx-auto space-y-4">
+        <div className="max-w-4xl mx-auto space-y-4 z-10">
           {/* SearchBar */}
           <SearchBar setKeyword={setKeyword} searchType="location" />
 

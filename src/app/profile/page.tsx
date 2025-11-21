@@ -14,12 +14,12 @@ interface state {
     role: string;
     _id: string;
     profileImage: string;
-    username: string;
+    userName: string;
     socialMedia: [];
     adminVerified: boolean;
-    phoneNumber: number;
+    regNumber: number;
     rank: number;
-    dateOfBirth: string;
+
     email: string;
   };
   logout: () => null;
@@ -78,10 +78,10 @@ const ProfilePage = () => {
   return (
     <>
       <HeaderCustom text={userData?.email} />
-      <main className="min-h-screen bg-gray-100 dark:bg-gray-900 mt-12 text-gray-800 dark:text-white">
+      <main className="min-h-screen bg-gray-100 dark:bg-[#1C1C1E] mt-12 text-gray-800 dark:text-white">
         <div className="flex flex-col md:flex-row md:h-screen max-w-7xl mx-auto overflow-hidden">
           {/* Sidebar */}
-          <aside className="w-full md:w-80 bg-white dark:bg-gray-800 p-6 border-b md:border-b-0 md:border-r overflow-y-auto">
+          <aside className="w-full md:w-80 bg-white dark:bg-[#1C1C1E] p-6 border-b md:border-b-0 md:border-r overflow-y-auto">
             <div className="flex flex-col items-center">
               <div
                 className="relative cursor-pointer group"
@@ -107,7 +107,7 @@ const ProfilePage = () => {
               />
 
               <h2 className="text-lg font-semibold mt-4 flex items-center gap-1 text-center">
-                {userData?.username || "Unknown User"}
+                {userData?.userName || "Unknown User"}
                 {userData?.adminVerified && (
                   <GoVerified className="text-blue-500" title="Verified" />
                 )}
@@ -118,13 +118,10 @@ const ProfilePage = () => {
 
               <div className="mt-6 text-left w-full text-sm space-y-2">
                 <p>
-                  <span className="font-medium">Phone:</span>{" "}
-                  {userData?.phoneNumber || "N/A"}
+                  <span className="font-medium">Reg Number:</span>{" "}
+                  {userData?.regNumber || "N/A"}
                 </p>
-                <p>
-                  <span className="font-medium">DOB:</span>{" "}
-                  {new Date(userData?.dateOfBirth).toLocaleDateString()}
-                </p>
+
                 <p>
                   <span className="font-medium">Rank:</span> #
                   {userData?.rank || 0}

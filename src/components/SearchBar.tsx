@@ -48,7 +48,7 @@ const SearchBar = ({ setKeyword, searchType = "word" }: SearchBarProps) => {
       <div className="relative flex-1">
         <input
           type="text"
-          placeholder="Search by location..."
+          placeholder="Search for event..."
           className="w-full h-12 pl-12 pr-4 rounded-2xl bg-gray-100 dark:bg-[#1C1C1E] text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow duration-300 shadow-sm hover:shadow-md"
           onChange={handleChange}
         />

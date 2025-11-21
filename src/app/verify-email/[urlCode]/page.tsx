@@ -76,7 +76,7 @@ const VerifyEmailPage = () => {
 
     try {
       const response = await verifyEmail(verificationCode);
-
+      console.log("Verification response:", response);
       if (response?.status === 200 || response?.data?.status === 200) {
         setIsRedirecting(true);
         setTimeout(() => router.push("/Login"), 1500);

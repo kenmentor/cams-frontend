@@ -78,7 +78,7 @@ const HouseMainComponent: React.FC<HouseMainComponentProps> = ({
   }, [page ? keyword : ""]);
 
   return (
-    <main className=" dark:bg-[#111111] min-h-screen">
+    <main className=" dark:bg-[#111111] min-h-screen z-10 ">
       {loading ? (
         <div>loading...</div>
       ) : error ? (

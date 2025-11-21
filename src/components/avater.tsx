@@ -100,7 +100,7 @@ export default function UserAvatar({
           <>
             {/* Overlay (click to close) */}
             <motion.div
-              className="fixed inset-0 bg-black/40 z-40"
+              className="fixed inset-0 bg-black/40 z-40 bottom-[-9999px]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -109,7 +109,7 @@ export default function UserAvatar({
 
             {/* Sidebar */}
             <motion.aside
-              className="fixed left-0 top-0 h-full w-64 bg-white dark:bg-gray-900 shadow-xl z-50 flex flex-col p-6"
+              className="fixed left-0 top-0 bottom-[-9999px]  w-64 bg-white dark:bg-gray-900 shadow-xl z-50  flex flex-col p-6  "
               initial={{ x: -300 }}
               animate={{ x: 0 }}
               exit={{ x: -300 }}

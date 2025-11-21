@@ -42,10 +42,14 @@ function SignupPage() {
     try {
       const data = await signup(formData);
       setCode(data.verifyToken);
+      console.log(
+        "////////////////////////////////////////////////////////////////////////",
+        data
+      );
       console.log("Signup response:", data);
       if (data?.status === 200) {
         setsentCode(true); // Show verification message
-        router.push(`/verify-email/${data.verifyToken}`);
+        router.push(`/verify-email/${data.data.verifyToken}`);
       }
     } catch (err) {
       console.error("Signup error:", err);

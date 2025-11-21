@@ -35,11 +35,8 @@ const UploadWizard = () => {
     files: [],
     category: "",
     thumbnail: null,
-
     location: "",
-
     type: "",
-
     host: "",
     maxguest: 10000,
   });

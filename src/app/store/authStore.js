@@ -41,7 +41,14 @@ export const useAuthStore = create(
           } else {
             set({ user: data.data, isLoading: false, error: null });
           }
-
+          console.log(
+            "this is the response///////////////////////////////////////////////",
+            data
+          );
+          console.log(
+            "this is the response///////////////////////////////////////////////",
+            data
+          );
           return data;
         } catch (error) {
           const errMsg =

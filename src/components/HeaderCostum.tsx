@@ -45,14 +45,15 @@ const HeaderCustom = ({ text, showBackButton = true }: HeaderProps) => {
         {text}
       </h1>
       {/*Right Side Content (Empty for Now) hello */}{" "}
-      {!user && (
+      {!user ? (
         <Link href={"/Login"}>
           <button className=" pc flex items-center justify-center gap-1 rounded-sm  py-1 mx-2 text-sm border-blue-600 border text-blue-600 bg-transparent hover:text-white">
             <BiUser /> Login
           </button>
         </Link>
+      ) : (
+        <UserAvatar profileImage={user?.profileImage} />
       )}
-      <UserAvatar profileImage={user?.profileImage} />
     </motion.header>
   );
 };
