@@ -9,6 +9,7 @@ import Resource from "@/components/Resource";
 import Error from "@/components/Erro";
 import { useAuthStore } from "@/app/store/authStore";
 import Req from "@/app/utility/axois";
+import { CgSpinner } from "react-icons/cg";
 
 interface ResourceType {
   header: string;
@@ -78,9 +79,11 @@ const HouseMainComponent: React.FC<HouseMainComponentProps> = ({
   }, [page ? keyword : ""]);
 
   return (
-    <main className=" dark:bg-[#111111] min-h-screen z-10 ">
+    <main className=" dark:bg-[#111111] min-h-screen z-10 py-[50px] ">
       {loading ? (
-        <div>loading...</div>
+        <div className="flex items-center justify-center  h-72 ">
+          <CgSpinner className=" size-12 animate-spin " />{" "}
+        </div>
       ) : error ? (
         <Error />
       ) : data.length > 0 ? (
@@ -96,7 +99,6 @@ const HouseMainComponent: React.FC<HouseMainComponentProps> = ({
               thumbnail={resource.thumbnail || "/placeholder.png"}
               id={resource._id}
               header={resource.header}
-              gallery={resource.gallery}
               location={resource.location}
               hostId={resource.host}
               userId={user?._id}

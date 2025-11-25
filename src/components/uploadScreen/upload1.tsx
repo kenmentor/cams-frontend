@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Meter from "../meter";
 
 import { GrGroup } from "react-icons/gr";
+import { CgCalendar } from "react-icons/cg";
 
 interface formData {
   thumbnail: File | null;
@@ -17,6 +18,7 @@ interface formData {
   maxguest: number;
   location: string;
   type: string;
+  date: string;
 }
 
 interface StepOneProps {
@@ -87,7 +89,22 @@ const StepOne: React.FC<StepOneProps> = ({
               }))
             }
           />
-
+          <label className="text-gray-400" htmlFor="title">
+            Event Date
+          </label>
+          <Input
+            icon={CgCalendar}
+            name="date"
+            type="date"
+            placeholder="Event Date "
+            value={formData.date}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFormData((prev: formData) => ({
+                ...prev,
+                date: e.target.value,
+              }))
+            }
+          />
           {/* maxguest */}
           <span className="text-gray-400 text-x mb-0">maxguest</span>
           <Input

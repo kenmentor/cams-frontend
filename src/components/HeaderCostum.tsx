@@ -7,6 +7,7 @@ import { MdArrowBackIos } from "react-icons/md";
 import { useAuthStore } from "@/app/store/authStore";
 import UserAvatar from "./avater";
 import { BiUser } from "react-icons/bi";
+import { useRouter } from "next/navigation";
 
 type HeaderProps = {
   text?: string;
@@ -16,6 +17,7 @@ type HeaderProps = {
 const HeaderCustom = ({ text, showBackButton = true }: HeaderProps) => {
   const [isVisible, setIsVisible] = useState(true);
   const user = useAuthStore((state) => state.user);
+  const router = useRouter();
   useEffect(() => {
     let lastScrollY = window.scrollY;
     const handleScroll = () => {
@@ -36,9 +38,9 @@ const HeaderCustom = ({ text, showBackButton = true }: HeaderProps) => {
     >
       {/* Back Button (Only Show When Needed) */}
       {showBackButton && (
-        <Link href={"/homepage"}>
+        <div onClick={() => router.back()}>
           <MdArrowBackIos className="text-blue-500 h-8 w-8" />
-        </Link>
+        </div>
       )}
       {/* Title */}
       <h1 className="text-lg font-semibold text-center flex-1 truncate">

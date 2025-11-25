@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "leaflet/dist/leaflet.css";
+
 
 body {
   @apply font-sans bg-white text-gray-900 leading-relaxed text-base;

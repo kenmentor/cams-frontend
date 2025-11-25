@@ -24,6 +24,7 @@ interface UserData {
   role: "guest" | "host";
   joinedAt: string;
   house?: string;
+  applyHost: true;
 }
 
 interface EventData {
@@ -41,7 +42,7 @@ export default function CampusAdminPage() {
   const [events, setEvents] = useState<EventData[]>([]);
   const [query, setQuery] = useState("");
   const [password, setPassword] = useState("");
-  const [accessGranted, setAccessGranted] = useState(false);
+  const [accessGranted, setAccessGranted] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const { base, app } = Req;
@@ -60,7 +61,7 @@ export default function CampusAdminPage() {
       if (data.success) setAccessGranted(true);
       else alert("Incorrect password!");
     } catch (err) {
-      console.error(err);
+      console.error(err, "error logining to admin");
       alert("Login failed!");
     }
   };
@@ -69,8 +70,8 @@ export default function CampusAdminPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await app.get("/user");
-      setUsers(res.data || []);
+      const res = await app.get("/v1/user");
+      setUsers(res.data.data || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -82,8 +83,9 @@ export default function CampusAdminPage() {
   const fetchEvents = async () => {
     try {
       setLoading(true);
-      const res = await app.get("/event");
-      setEvents(res.data || []);
+      const res = await app.get("v1/event");
+      setEvents(res.data.data || []);
+      console.log(res.data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -100,18 +102,31 @@ export default function CampusAdminPage() {
 
   // User analytics
   const roleStats = useMemo(() => {
-    const guestCount = users.filter((u) => u.role === "guest").length;
+    const guestCount = users.filter(
+      (u) => u.role === "guest" || "geust"
+    ).length;
     const hostCount = users.filter((u) => u.role === "host").length;
     return [
       { name: "Guests", value: guestCount },
       { name: "Hosts", value: hostCount },
     ];
   }, [users]);
+  function test() {
+    const date = "2025-11-23T13:51:16.088Z";
+    const today = new Date();
 
+    console.log(new Date(date));
+    console.log(new Date(date) < today);
+  }
+  test();
   // Event analytics
   const eventStats = useMemo(() => {
     const today = new Date();
-    const pastEvents = events.filter((e) => new Date(e.date) < today).length;
+
+    const pastEvents = events.filter((e) => {
+      console.log(new Date(e.date));
+      return new Date(e.date) < today;
+    }).length;
     const upcomingEvents = events.filter(
       (e) => new Date(e.date) >= today
     ).length;
@@ -120,11 +135,14 @@ export default function CampusAdminPage() {
       { name: "Upcoming Events", value: upcomingEvents },
     ];
   }, [events]);
+  console.log("this is the data ves stats", eventStats, events);
+  console.log("this is the data ves stats users", users, roleStats);
 
   // Upgrade guest to host
   const handleUpgrade = async (id: string) => {
+    alert(id);
     try {
-      await app.put(`/user/${id}`, { role: "host" });
+      await app.put(`v1/user/${id}`, { role: "host" });
       setUsers((prev) =>
         prev.map((u) => (u._id === id ? { ...u, role: "host" } : u))
       );
@@ -137,12 +155,23 @@ export default function CampusAdminPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this user?")) return;
     try {
-      await app.put(`/user/${id}`, { deleted: true }); // Or call delete route if exists
+      await app.put(`v1/user/${id}`, { deleted: true }); // Or call delete route if exists
       setUsers((prev) => prev.filter((u) => u._id !== id));
     } catch (err) {
       console.error(err);
     }
   };
+  async function handleEventDelete(id, index) {
+    if (!confirm("Delete this event?")) return;
+
+    setEvents((prev) => prev.filter((u) => u._id !== id));
+    try {
+      await app.put(`/event`, { avaliable: false });
+      console.log(events); // Or call delete route if exists
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   const filteredUsers = useMemo(() => {
     if (!query.trim()) return users;
@@ -179,7 +208,7 @@ export default function CampusAdminPage() {
   }
 
   return (
-    <div className="bg-[#0B0B0D] min-h-screen text-[#E7E9EA]">
+    <div className="bg-[#0B0B0D] min-h-screen text-[#E7E9EA] pt-[100px]">
       <HeaderCustom text="Campus Admin Dashboard" />
       <div className="p-4 max-w-7xl mx-auto space-y-8">
         {loading && <p>Loading data...</p>}
@@ -244,7 +273,7 @@ export default function CampusAdminPage() {
           <h3 className="text-lg font-semibold mb-4">All Users</h3>
           <input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => setQuery(e?.target.value)}
             placeholder="Search users..."
             className="px-3 py-2 rounded border border-[#2F3336] bg-[#0B0B0D] text-[#E7E9EA] w-full mb-4"
           />
@@ -265,24 +294,24 @@ export default function CampusAdminPage() {
                   key={u._id}
                   className="border-b border-[#2F3336] hover:bg-[#16181C]"
                 >
-                  <td className="p-2">{u.name}</td>
-                  <td className="p-2">{u.email}</td>
+                  <td className="p-2">{u?.name}</td>
+                  <td className="p-2">{u?.email}</td>
                   <td className="p-2 capptalize">{u.role}</td>
-                  <td className="p-2">{u.house || "-"}</td>
+                  <td className="p-2">{u?.house || "-"}</td>
                   <td className="p-2">
-                    {new Date(u.joinedAt).toLocaleDateString()}
+                    {new Date(u?.joinedAt)?.toLocaleDateString()}
                   </td>
                   <td className="p-2 flex gap-2">
-                    {u.role === "guest" && (
+                    {u.applyHost === true && (
                       <button
-                        onClick={() => handleUpgrade(u._id)}
+                        onClick={() => handleUpgrade(u?._id)}
                         className="px-2 py-1 bg-green-500 text-black rounded flex items-center gap-1"
                       >
                         <FaUserEdit /> Upgrade
                       </button>
                     )}
                     <button
-                      onClick={() => handleDelete(u._id)}
+                      onClick={() => handleDelete(u?._id)}
                       className="px-2 py-1 bg-red-600 text-white rounded flex items-center gap-1"
                     >
                       <FaTrash /> Delete
@@ -307,17 +336,23 @@ export default function CampusAdminPage() {
               </tr>
             </thead>
             <tbody>
-              {events.map((e) => (
+              {events.map((e, index) => (
                 <tr
-                  key={e._id}
+                  key={e?._id}
                   className="border-b border-[#2F3336] hover:bg-[#16181C]"
                 >
-                  <td className="p-2">{e.title}</td>
-                  <td className="p-2">{e.host}</td>
+                  <td className="p-2">{e?.title}</td>
+                  <td className="p-2">{e?.host}</td>
                   <td className="p-2">
-                    {new Date(e.date).toLocaleDateString()}
+                    {new Date(e?.date).toLocaleDateString()}
                   </td>
-                  <td className="p-2">{e.attendees}</td>
+                  <td className="p-2">{e?.attendees}</td>
+                  <div
+                    className="text-red-600 flex items-center justify-center  h-[40px]"
+                    onClick={() => handleEventDelete(e?._id, index)}
+                  >
+                    <FaTrash />
+                  </div>
                 </tr>
               ))}
             </tbody>

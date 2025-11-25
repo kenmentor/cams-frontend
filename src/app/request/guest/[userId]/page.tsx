@@ -8,6 +8,7 @@ import HeaderCustom from "@/components/HeaderCostum";
 import { useAuthStore } from "@/app/store/authStore";
 import { useReactToPrint } from "react-to-print";
 import { FaTrash, FaCheck } from "react-icons/fa";
+import { findSourceMap } from "node:module";
 
 interface RequestData {
   _id: string;
@@ -15,7 +16,7 @@ interface RequestData {
   accepted?: boolean;
   guest: { userName: string } | string;
   host: { userName: string } | string;
-  event: { _id?: string; title?: string } | string;
+  event: { _id?: string; title?: string; thumbnail: string } | string;
   house?: string;
   note?: string;
 }
@@ -86,6 +87,7 @@ export default function RequestsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const [data, setData] = useState<RequestData>();
 
   const printRef = useRef<HTMLDivElement | null>(null);
 
@@ -93,12 +95,36 @@ export default function RequestsPage() {
     content: () => printRef.current,
     documentTitle: "Invitation Card",
   });
-
+  const fetchRequest = async () => {
+    try {
+      const data = await app.get(
+        `http://localhost:5036/v1/request/list/692418d703e786bb5fa43804?role=guest&page=1&limit=200`
+      );
+      console.log(
+        "Request fetched successfully",
+        data.data,
+        `/v1/request/list/${userId}?role=${user.role}&page=1&limit=200`
+      );
+      setRequests(data.data.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load requests");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (!user) return;
+    fetchRequest();
+    setError(null);
+    setLoading(true);
+  }, [user, userId]);
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this request?")) {
       setRequests((prev) => prev.filter((r) => r._id !== id));
       // Optionally send DELETE request to backend
-      // app.delete(`/v1/request/${id}`)
+      app.delete(`/v1/request/${id}`);
     }
   };
 
@@ -160,6 +186,14 @@ export default function RequestsPage() {
                   key={r._id}
                   className="p-4 bg-[#0F1419] rounded-lg border border-[#2F3336] flex flex-col justify-between hover:bg-[#16181C]"
                 >
+                  <div className=" w-full h-[250px] ">
+                    <img
+                      src={r.event?.thumbnail}
+                      alt=""
+                      className="h-full w-full object-cover "
+                    />
+                  </div>
+
                   <div onClick={() => router.push(`${user.role}/${r._id}/`)}>
                     <p className="font-semibold">{guest}</p>
                     <p className="text-sm text-[#AEB5B9]">Host: {host}</p>

@@ -21,12 +21,13 @@ interface formData {
 
   location: string;
   type: string;
-
+  date: string;
   maxguest: number; // 👈 add this
   host: string;
 }
 
 const UploadWizard = () => {
+  const todayDate = JSON.stringify(new Date());
   const [step, setStep] = useState<number>(1);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<formData>({
@@ -35,6 +36,7 @@ const UploadWizard = () => {
     files: [],
     category: "",
     thumbnail: null,
+    date: todayDate,
     location: "",
     type: "",
     host: "",
@@ -83,6 +85,7 @@ const UploadWizard = () => {
 
       data.append("location", formData.location);
       data.append("type", formData.type);
+      data.append("date", JSON.stringify(formData.date));
 
       // 👈 "true"/"false"
 

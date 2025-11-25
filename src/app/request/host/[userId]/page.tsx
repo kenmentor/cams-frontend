@@ -7,7 +7,7 @@ import { MdGridView, MdTableChart, MdFileDownload } from "react-icons/md";
 import HeaderCustom from "@/components/HeaderCostum";
 import Loading from "@/components/Loainding";
 import { useAuthStore } from "@/app/store/authStore";
-
+import Req from "@/app/utility/axois";
 /*
   Improved, production-ready Requests admin page.
   - Role-aware: shows requests differently for host vs guest
@@ -19,9 +19,14 @@ import { useAuthStore } from "@/app/store/authStore";
   - Typesafe-ish (keeps compatibility with existing backend shapes)
 */
 
-type ReqGuest = { userName: string; _id?: string } | string;
-type ReqHost = { userName: string; _id?: string } | string;
-type ReqEvent = { _id?: string; title?: string; image?: string } | string;
+type ReqGuest = { userName: string; _id?: string; thumbnail: string };
+type ReqHost = { userName: string; _id?: string; thumbnail: string };
+type ReqEvent = {
+  _id?: string;
+  title?: string;
+  image?: string;
+  thumbnail: string;
+};
 
 export interface RequestData {
   _id: string;
@@ -36,12 +41,6 @@ export interface RequestData {
   note?: string;
   [k: string]: any;
 }
-
-const app = axios.create({
-  baseURL: "https://agent-with-me-backend.onrender.com",
-  withCredentials: true,
-  headers: { "Content-Type": "application/json" },
-});
 
 function formatDateISO(d?: string) {
   if (!d) return "-";
@@ -109,8 +108,8 @@ function RequestCard({
   onSelect: (id: string) => void;
   selected?: boolean;
 }) {
-  const guestName = typeof r.guest === "string" ? r.guest : r.guest?.userName;
-  const hostName = typeof r.host === "string" ? r.host : r.host?.userName;
+  const guestName = r.guest?.userName;
+  const hostName = r.host?.userName;
   const ev =
     typeof r.event === "string"
       ? { _id: r.event, title: "Event" }
@@ -118,12 +117,15 @@ function RequestCard({
   return (
     <div className="bg-[#0F1419] p-3 rounded-xl border border-[#2F3336] shadow-sm flex flex-col justify-between">
       <div className="flex gap-3">
-        <EventImage src={(ev as any).image} title={(ev as any).title} />
+        <EventImage src={r?.event?.thumbnail} title={(ev as any).title} />
         <div className="flex-1">
           <div className="flex items-start justify-between">
             <div>
               <p className="font-semibold">{guestName}</p>
-              <p className="text-sm text-[#AEB5B9]">Host: {hostName}</p>
+              <p className="text-sm text-[#AEB5B9] flex">
+                host:{""}
+                {hostName}
+              </p>
             </div>
             <input
               type="checkbox"
@@ -134,7 +136,7 @@ function RequestCard({
           <p className="text-sm text-[#E7E9EA] mt-2">
             Event: {(ev as any).title}
           </p>
-          <p className="text-sm text-[#AEB5B9]">House: {r.house}</p>
+
           <p className="text-xs text-[#9AA3A7]">
             Created: {formatDateISO(r.createdAt)}
           </p>
@@ -219,70 +221,12 @@ function RequestRow({
 
 /* ---------- Main component ---------- */
 export default function RequestsAdminDashboard() {
-  const { userId } = useParams();
   const user = useAuthStore((s) => s.user);
 
-  const [requests, setRequests] = useState<RequestData[]>([
-    {
-      _id: "req_001",
-      createdAt: "2025-02-12T09:30:00Z",
-      updatedAt: "2025-02-12T10:00:00Z",
-      guest: { userName: "John Emmanuel", _id: "guest_001" },
-      host: { userName: "Dr. Kingsley Okoro", _id: "host_001" },
-      event: {
-        _id: "event_001",
-        title: "Tech Innovators Summit",
-        image: "https://placehold.co/600x400/png",
-      },
-      accepted: false,
-      attended: false,
-      house: "Faculty of Physical Sciences",
-      note: "First-time visitor",
-    },
-
-    {
-      _id: "req_002",
-      createdAt: "2025-02-11T14:10:00Z",
-      guest: "Chioma Okafor",
-      host: { userName: "Prof. Bassey Etim", _id: "host_002" },
-      event: "UNICAL Cultural Festival",
-      accepted: true,
-      attended: false,
-      note: "Cultural society leader",
-    },
-
-    {
-      _id: "req_003",
-      createdAt: "2025-02-10T16:45:00Z",
-      updatedAt: "2025-02-10T17:00:00Z",
-      guest: { userName: "David Udo" },
-      host: "Engr. Stella Nwachukwu",
-      event: {
-        _id: "event_003",
-        title: "Frontend Dev Bootcamp",
-        image: "https://placehold.co/600x400/png",
-      },
-      accepted: true,
-      attended: true,
-      house: "Department of Computer Science",
-    },
-
-    {
-      _id: "req_004",
-      createdAt: "2025-02-09T18:20:00Z",
-      guest: "Blessing Peters",
-      host: { userName: "Mr. Samuel Ogar" },
-      event: {
-        title: "Gospel Music Night",
-        image: "https://placehold.co/600x400/png",
-      },
-      accepted: false,
-      attended: false,
-      note: "Choir member",
-    },
-  ]);
+  const [requests, setRequests] = useState<RequestData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { base, app } = Req;
 
   // UI statea
   const [viewMode, setViewMode] = useState<"cards" | "table">("cards");
@@ -294,29 +238,28 @@ export default function RequestsAdminDashboard() {
   const [groupByEvent, setGroupByEvent] = useState(true);
   const [sortBy, setSortBy] = useState<"newest" | "oldest">("newest");
   const [selected, setSelected] = useState<Record<string, boolean>>({});
-
+  console.log("user", user);
+  console.log("requests", requests);
   // Fetch requests (role aware) with abort support
+  async function fetchRequests() {
+    try {
+      setError(null);
+      setLoading(true);
+      const data = await app.get(
+        `/v1/request/list/${user?._id}?role=${user?.role}&page=1&limit=200`
+      );
+      console.log(data);
+      setRequests(data.data.data || []);
+    } catch (error) {
+      console.error(error);
+      setError("Failed to load requests");
+    } finally {
+      setLoading(false);
+    }
+  }
   useEffect(() => {
-    if (!user) return;
-    const ac = new AbortController();
-    setError(null);
-    setLoading(true);
-    app
-      .get(`/v1/request/list/${userId}?role=${user.role}&page=1&limit=200`, {
-        signal: ac.signal,
-      })
-      .then((res) => {
-        const data = res.data?.data ?? [];
-        setRequests(Array.isArray(data) ? data : []);
-      })
-      .catch((err) => {
-        if (axios.isCancel(err)) return;
-        console.error(err);
-        setError("Failed to load requests");
-      })
-      .finally(() => setLoading(false));
-    return () => ac.abort();
-  }, [user, userId]);
+    fetchRequests();
+  }, [user]);
 
   // events map used for filters / KPIs
   const eventsMap = useMemo(() => {
@@ -488,14 +431,14 @@ export default function RequestsAdminDashboard() {
       <HeaderCustom
         text={user.role === "host" ? "Host Requests" : "Requests Management"}
       />
-      <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto text-[#E7E9EA] bg-[#000000] mt-10">
+      <div className="p-4 md:p-6 lg:p-8 mt-[70px]  mx-auto text-[#E7E9EA] bg-[#000000]  h-svh">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 bg-[#000000] rounded-xl p-4 border border-[#2F3336] shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold">Requests Dashboard</h2>
                 <p className="text-sm text-[#AEB5B9]">
-                  Fast admin triage — search, filter, group, act.
+                  search, filter, group, act.
                 </p>
               </div>
 

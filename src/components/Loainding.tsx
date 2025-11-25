@@ -13,7 +13,7 @@ const Loading = () => {
         </span>
 
         {/* Spinner */}
-        <BiLoader size={48} className="text-white animate-spin-slow" />
+        <BiLoader size={48} className="text-white animate-spin" />
       </div>
     </div>
   );

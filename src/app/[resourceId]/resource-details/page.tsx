@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaWhatsapp, FaLocationArrow, FaCalendarAlt } from "react-icons/fa";
+import {
+  FaWhatsapp,
+  FaLocationArrow,
+  FaCalendarAlt,
+  FaTruckLoading,
+} from "react-icons/fa";
 import { useParams, useRouter } from "next/navigation";
 import Footer from "@/components/footer";
 import HouseMainComponent from "@/components/HouseMainComponent";
@@ -13,6 +18,10 @@ import { toast } from "sonner";
 import { GrGroup } from "react-icons/gr";
 import { BsViewList } from "react-icons/bs";
 import { BiTime, BiUser } from "react-icons/bi";
+import { CgSpinner } from "react-icons/cg";
+import ClientMap from "@/components/ClientMapWrapper";
+import Map from "@/components/Map";
+import EventCalendar from "@/components/calendar";
 
 interface Data {
   _id: string;
@@ -25,6 +34,7 @@ interface Data {
   location: string;
   maxguest: number;
   dateTime?: string;
+  date: string;
   host: { _id: string; phoneNumber: number };
 }
 
@@ -37,6 +47,7 @@ const RentalPage: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [readMore, setReadMore] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [requestLoading, setRequestLoading] = useState(false);
   const [data, setData] = useState<Data>({
     _id: "",
     title: "hello world event",
@@ -48,7 +59,7 @@ const RentalPage: React.FC = () => {
     category: "general",
     thumbnail: "",
     location: "abuja",
-    dateTime: "",
+    date: "",
     host: { _id: "", phoneNumber: 0 },
   });
 
@@ -67,26 +78,35 @@ const RentalPage: React.FC = () => {
       toast.error("Failed to load event details");
     }
   }
-
+  console.log(user);
   // RSVP request
   async function handleRequest() {
     if (!user?._id) return toast.error("You need to login");
-    setLoading(true);
+    setRequestLoading(true);
     try {
       if (user?.role !== "host") {
-        await app.post(`${base}/v1/request`, {
-          hostId: data.host._id,
-          guestId: user._id,
-          houseId: data._id,
+        const res = await app.post(`${base}/v1/request`, {
+          host: data.host._id,
+          guest: user._id,
+          event: data._id,
         });
+        console.log(res);
       }
-      router.push(`/request/${user.role}/${user._id}`);
+      toast.success("request have been sent");
+      router.push(
+        `/request/${user.role == "geust" ? "guest" : user.role}/${user._id}`
+      );
     } catch (erro) {
       const res = erro.response?.data;
       toast.error(res?.message || "Something went wrong");
+      if (erro.response?.status === 401) {
+        router.push(
+          `/request/${user.role == "geust" ? "guest" : user.role}/${user._id}`
+        );
+      }
     } finally {
       setLoading(false);
-      router.push(`/request/${user.role}/${user._id}`);
+      setRequestLoading(false);
     }
   }
 
@@ -199,9 +219,18 @@ const RentalPage: React.FC = () => {
             <div className="flex flex-col md:flex-row gap-4 mt-4">
               <button
                 onClick={handleRequest}
-                className="flex-1 py-4 rounded-2xl bg-[#FF375F] text-white font-semibold shadow-lg hover:bg-[#FF1F4A] transition transform hover:scale-105"
+                // disabled={requestLoading}
+                className="flex-1 py-4 rounded-2xl bg-[#FF375F] text-white font-semibold shadow-lg hover:bg-[#FF1F4A] transition transform hover:scale-105 flex justify-center items-center"
               >
-                {user?.role !== "host" ? "RSVP" : "Check Details"}
+                {!requestLoading ? (
+                  user?.role !== "host" ? (
+                    "RSVP"
+                  ) : (
+                    "Check Details"
+                  )
+                ) : (
+                  <CgSpinner className=" animate-spin size-8" />
+                )}
               </button>
               <button
                 onClick={handleWhatsAppContact}
@@ -223,20 +252,28 @@ const RentalPage: React.FC = () => {
             </div>
           </div>
         </div>
+        <div className="py-6  flex flex-col md:flex-row gap-8 justify-center items-center">
+          <div className="w-full">
+            <EventCalendar eventDate={data?.date} title={data?.title} />
+          </div>
+          <div className="p-6 w-full max-w-lg">
+            <h1 className="text-xl font-semibold mb-4">Event Location</h1>
+            <ClientMap />
+          </div>
+        </div>
 
-        {/* Suggested Events */}
         <div className="mt-16">
           <h2 className="text-3xl font-bold text-gray-100 mb-6">
             You may like these events
           </h2>
           <HouseMainComponent
             keyword={{
-              category: data.category,
-              searchWord: data.location,
+              category: "",
+              searchWord: "",
               limit: 6,
               id: data._id,
             }}
-            bardge={1}
+            // bardge={1}
             page={false}
           />
         </div>

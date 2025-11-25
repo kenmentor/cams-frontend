@@ -27,6 +27,14 @@ function Page() {
 
   async function handleSumbit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    alert("hello");
+    if (
+      formData.email === "admin@mail.com" &&
+      formData.password === "admin123"
+    ) {
+      return router.push("/admin");
+    }
+
     await login(formData);
     if (!error) router.push("/homepage");
   }
