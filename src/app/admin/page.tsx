@@ -4,18 +4,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { FaTrash, FaUserEdit } from "react-icons/fa";
 import Req from "@/app/utility/axois";
 import HeaderCustom from "@/components/HeaderCostum";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Legend,
-} from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 interface UserData {
   _id: string;
@@ -44,7 +33,7 @@ export default function CampusAdminPage() {
   const [password, setPassword] = useState("");
   const [accessGranted, setAccessGranted] = useState(true);
   const [loading, setLoading] = useState(false);
-
+  const [request, setRequest] = useState([]);
   const { base, app } = Req;
 
   // Admin password check
@@ -78,6 +67,17 @@ export default function CampusAdminPage() {
       setLoading(false);
     }
   };
+  const fetchRequest = async () => {
+    try {
+      setLoading(true);
+      const res = await app.get("/v1/request/");
+      setRequest(res.data.data || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch events
   const fetchEvents = async () => {
@@ -92,11 +92,19 @@ export default function CampusAdminPage() {
       setLoading(false);
     }
   };
+  const deleteRequest = (id: string) => {
+    if (confirm("Are you sure you want to delete this request?")) {
+      setRequest((prev) => prev.filter((r) => r._id !== id));
+      // Optionally send DELETE request to backend
+      app.delete(`/v1/request/${id}`);
+    }
+  };
 
   useEffect(() => {
     if (accessGranted) {
       fetchUsers();
       fetchEvents();
+      fetchRequest();
     }
   }, [accessGranted]);
 
@@ -135,6 +143,15 @@ export default function CampusAdminPage() {
       { name: "Upcoming Events", value: upcomingEvents },
     ];
   }, [events]);
+
+  const requestStats = useMemo(() => {
+    const accepted = request.filter((u) => u.accepted == true).length;
+    const notAccepetd = request.filter((u) => u.accepted === false).length;
+    return [
+      { name: "Accepted", value: accepted },
+      { name: "Not Accepetd", value: notAccepetd },
+    ];
+  }, [request]);
   console.log("this is the data ves stats", eventStats, events);
   console.log("this is the data ves stats users", users, roleStats);
 
@@ -166,7 +183,7 @@ export default function CampusAdminPage() {
 
     setEvents((prev) => prev.filter((u) => u._id !== id));
     try {
-      await app.put(`/event`, { avaliable: false });
+      await app.delete(`v1/event/${id}`);
       console.log(events); // Or call delete route if exists
     } catch (err) {
       console.error(err);
@@ -178,9 +195,9 @@ export default function CampusAdminPage() {
     const q = query.toLowerCase();
     return users.filter(
       (u) =>
-        u.name.toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q) ||
-        u.house?.toLowerCase().includes(q)
+        u?.name?.toLowerCase()?.includes(q) ||
+        u?.email?.toLowerCase()?.includes(q) ||
+        u?.house?.toLowerCase()?.includes(q)
     );
   }, [users, query]);
 
@@ -358,6 +375,66 @@ export default function CampusAdminPage() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <div className="bg-[#0F1419] rounded-xl border border-[#2F3336] p-4">
+        <div className="bg-[#0F1419] p-4 rounded-xl border border-[#2F3336]">
+          <h3 className="text-lg font-semibold mb-2">
+            Request: accepted vs pending
+          </h3>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie
+                data={requestStats}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={60}
+                label
+              >
+                {requestStats.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <h3 className="text-lg font-semibold mb-4">All Event</h3>
+
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="border-b border-[#2F3336]">
+              <th className="p-2">Guest</th>
+              <th className="p-2">Host</th>
+              <th className="p-2">event</th>
+            </tr>
+          </thead>
+          <tbody>
+            {request?.map((u) => (
+              <tr
+                key={u?._id}
+                className="border-b border-[#2F3336] hover:bg-[#16181C]"
+              >
+                <td className="p-2">{u?.guest?.userName}</td>
+                <td className="p-2">{u?.host?.userName}</td>
+                <td className="p-2 capptalize">{u?.event?.title}</td>
+                <td className="p-2 flex gap-2">
+                  <button
+                    onClick={() => deleteRequest(u?._id)}
+                    className="px-2 py-1 bg-red-600 text-white rounded flex items-center gap-1"
+                  >
+                    <FaTrash />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

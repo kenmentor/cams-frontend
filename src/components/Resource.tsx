@@ -52,7 +52,6 @@ export default function Resource({
   id,
   header,
   thumbnail,
-  maxguest,
   location,
   hostId,
   userId,

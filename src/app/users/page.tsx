@@ -44,9 +44,7 @@ const UserPage: React.FC = () => {
   const getData = async () => {
     setLoading(true);
     try {
-      const response = await app.get(
-        `${base}/user?email=${keyword?.searchWord || ""}`
-      );
+      const response = await app.get(`/v1/user`);
       setData(response.data.data || []);
     } catch (error) {
       console.error("Error fetching users:", error);

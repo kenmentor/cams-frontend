@@ -82,16 +82,14 @@ const UploadWizard = () => {
       data.append("title", formData.title);
       data.append("description", formData.description);
       data.append("category", formData.category);
-
       data.append("location", formData.location);
       data.append("type", formData.type);
       data.append("date", JSON.stringify(formData.date));
-
       // 👈 "true"/"false"
 
       data.append("host", user?._id || "");
-
-      data.append("maxgeust", formData.maxguest.toString()); // 👈 default since schema requires it
+      alert(formData.maxguest.toString());
+      data.append("maxguest", formData.maxguest.toString()); // 👈 default since schema requires it
 
       // Use gallery instead of files
       formData.files.forEach((file) => {
@@ -139,11 +137,8 @@ const UploadWizard = () => {
         left="90%"
         delay={2}
       />
-
       {/* Header with Back Arrow and Progress Tracker */}
-
       {loading && <UploadingUi />}
-
       {/* Message */}
       {message === "error" && <ErroMessage setMessage={setMessage} />}
       {message === "success" && <SuccessMessage />}
@@ -153,7 +148,6 @@ const UploadWizard = () => {
         message !== "" && (
           <Validation message={message} setMessage={setMessage} />
         )}
-
       {/* Step Components */}
       {step === 1 && (
         <StepOne
@@ -163,7 +157,6 @@ const UploadWizard = () => {
           step={step}
         />
       )}
-
       {step === 2 && (
         <StepThree
           formData={formData}
@@ -182,7 +175,6 @@ const UploadWizard = () => {
           step={step}
         />
       )}
-
       {step === 4 && (
         <StepFour
           formData={formData}

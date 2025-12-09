@@ -66,7 +66,7 @@ export default function UserAvatar({
     {
       label: "Request",
       icon: <MdRequestPage className="w-5 h-5" />,
-      path: `/request/${user?._id || ""}`,
+      path: `/request/${user.role}/${user?._id || ""}`,
     },
     {
       label: "Users",

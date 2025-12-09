@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { GoVerified } from "react-icons/go";
 import { BiStar, BiUser } from "react-icons/bi";
-import { MdEmail } from "react-icons/md";
+
 import { GrContact } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";

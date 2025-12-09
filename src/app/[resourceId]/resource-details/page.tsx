@@ -27,7 +27,7 @@ interface Data {
   _id: string;
   title: string;
   description: string;
-  currentRequest: number;
+  requestCount: number;
   views: number;
   category: string;
   thumbnail: string;
@@ -55,7 +55,7 @@ const RentalPage: React.FC = () => {
       "this is the heloo world event for every one come and the helloed and never give up on being a hello world fan we inviting alot of of hello world fan form across the world from africa china and the usa ",
     views: 0,
     maxguest: 0,
-    currentRequest: 0,
+    requestCount: 0,
     category: "general",
     thumbnail: "",
     location: "abuja",
@@ -78,9 +78,13 @@ const RentalPage: React.FC = () => {
       toast.error("Failed to load event details");
     }
   }
-  console.log(user);
+  console.log(data);
   // RSVP request
   async function handleRequest() {
+    if (data.requestCount >= data.maxguest) {
+      toast.error("all reservation have been taking");
+      return;
+    }
     if (!user?._id) return toast.error("You need to login");
     setRequestLoading(true);
     try {
@@ -173,11 +177,11 @@ const RentalPage: React.FC = () => {
                 <FaLocationArrow className="text-[#0A84FF]" /> {data.location}
               </div>
               <div className="flex items-center gap-2 font-medium">
-                <GrGroup className="text-[#30D158]" /> {data.maxguest}{" "}
-                participants
+                <GrGroup className="text-[#30D158]" /> {data.requestCount}{" "}
+                request
               </div>
               <div className="flex items-center gap-2 font-medium">
-                <BsViewList className="text-[#FFD60A]" /> {data.views} views
+                <BsViewList className="text-[#FFD60A]" /> {data.maxguest} max
               </div>
             </div>
 

@@ -27,7 +27,7 @@ function Page() {
 
   async function handleSumbit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    alert("hello");
+
     if (
       formData.email === "admin@mail.com" &&
       formData.password === "admin123"
